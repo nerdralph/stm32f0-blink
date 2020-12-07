@@ -2,7 +2,7 @@
 #include "stm32f031x6.h"
 
 #ifndef DELAY
-#define DELAY 250
+#define DELAY 500
 #endif
 
 // PA9 is serial TX

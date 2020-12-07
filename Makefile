@@ -5,30 +5,30 @@ LD_SCRIPT = STM32F031K6T6.ld
 MCU_SPEC  = cortex-m0
 
 # Toolchain definitions (ARM bare metal defaults)
-TOOLCHAIN = /mingw/gcc-arm-5.4
-CC = $(TOOLCHAIN)/bin/arm-none-eabi-gcc
-AS = $(TOOLCHAIN)/bin/arm-none-eabi-as
-LD = $(TOOLCHAIN)/bin/arm-none-eabi-ld
-OC = $(TOOLCHAIN)/bin/arm-none-eabi-objcopy
-OD = $(TOOLCHAIN)/bin/arm-none-eabi-objdump
-OS = $(TOOLCHAIN)/bin/arm-none-eabi-size
+CC = arm-none-eabi-gcc
+AS = arm-none-eabi-as
+LD = arm-none-eabi-ld
+OC = arm-none-eabi-objcopy
+OD = arm-none-eabi-objdump
+OS = arm-none-eabi-size
 
 SERIAL ?= COM39
 FLASH = stm32flash -i dtr-dtr -g 0 -w
 
+# common build flags
+BFLAGS = -mcpu=$(MCU_SPEC)
+BFLAGS += -mthumb
+BFLAGS += -Wall
+
 # Assembly directives.
 ASFLAGS += -c
 ASFLAGS += -O0
-ASFLAGS += -mcpu=$(MCU_SPEC)
-ASFLAGS += -mthumb
-ASFLAGS += -Wall
+ASFLAGS += $(BFLAGS)
 # (Set error messages to appear on a single line.)
 ASFLAGS += -fmessage-length=0
 
 # C compilation directives
-CFLAGS += -mcpu=$(MCU_SPEC)
-CFLAGS += -mthumb
-CFLAGS += -Wall
+CFLAGS += $(BFLAGS)
 CFLAGS += -g
 CFLAGS += -Os
 # (Set error messages to appear on a single line.)
@@ -38,15 +38,12 @@ CFLAGS += --specs=nosys.specs
 
 # Linker directives.
 LSCRIPT = ./ld/$(LD_SCRIPT)
-LFLAGS += -mcpu=$(MCU_SPEC)
-LFLAGS += -mthumb
-LFLAGS += -Wall
+LFLAGS += $(BFLAGS)
 LFLAGS += --specs=nosys.specs
 LFLAGS += -nostdlib
 LFLAGS += -lgcc
 LFLAGS += -T$(LSCRIPT)
 
-# AS_SRC   =  ./src/core.S
 AS_SRC   += ./src/vector_table.S
 C_SRC    =  ./src/main.c
 
