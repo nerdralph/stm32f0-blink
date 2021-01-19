@@ -11,6 +11,13 @@
 //#define LED_PORT GPIOB
 //#define LED_PIN 1
 
+// add nop to delay loop for parts with 2-stage pipeline like m0+
+#ifdef DELAY_NOP
+#define CORTEX_DELAY "nop   \n"
+#else
+#define CORTEX_DELAY ""
+#endif
+
 // delay 1ms at 8MHz
 void delay_ms(uint16_t ms)
 {
@@ -20,6 +27,7 @@ void delay_ms(uint16_t ms)
   ".syntax unified\n"
   "   muls r0, %0, r0 \n"
   "1: subs r0, #1     \n"
+  CORTEX_DELAY
   "   bne 1b          \n"
   : "+l" (count) :: );
 }

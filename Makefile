@@ -13,7 +13,8 @@ OD = arm-none-eabi-objdump
 OS = arm-none-eabi-size
 
 SERIAL ?= COM39
-FLASH = stm32flash -i dtr-dtr -g 0 -w
+# FLASH ?= stm32loader -e -n -p $(SERIAL) -b 57600 -w
+FLASH ?= stm32flash -i dtr-dtr -g 0 -w
 
 # common build flags
 BFLAGS = -mcpu=$(MCU_SPEC)
@@ -31,6 +32,8 @@ ASFLAGS += -fmessage-length=0
 CFLAGS += $(BFLAGS)
 CFLAGS += -g
 CFLAGS += -Os
+# enable for 2-stage pipeline
+CFLAGS += -DDELAY_NOP
 # (Set error messages to appear on a single line.)
 CFLAGS += -fmessage-length=0
 # (Set system to ignore semihosted junk)
